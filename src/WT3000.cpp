@@ -16,6 +16,7 @@ WT3000::~WT3000() {}
 void WT3000::connect()
 {
     this->setRemote(true);
+    cout << getInstrumentModel() << endl;
 }
 
 
@@ -26,7 +27,8 @@ void WT3000::setRemote(bool enable)
 }
 
 
-void WT3000::read()
+string WT3000::getInstrumentModel()
 {
-
+    usb->send(cmdInstrumentModel);
+    return usb->receive();
 }

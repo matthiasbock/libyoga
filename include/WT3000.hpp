@@ -34,7 +34,9 @@ namespace Yokogawa
 
         void setRemote(bool);
 
-        void read();
+        const string cmdInstrumentModel = "*IDN?";
+
+        string getInstrumentModel();
     };
 }
 
