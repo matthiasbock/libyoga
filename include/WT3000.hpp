@@ -28,6 +28,20 @@ namespace Yokogawa
             const string Verbose = ":VERBose";
         }
 
+        namespace Input
+        {
+            const string Group = ":INPut";
+            const string Module = ":MODUle";
+            const string Voltage = ":VOLTage";
+            const string Current = ":CURRent";
+        }
+
+        namespace Numeric
+        {
+            const string Group = ":NUMeric";
+            const string Value = ":VALue";
+        }
+
         namespace Status
         {
             const string Group = ":STATus";
@@ -88,6 +102,16 @@ namespace Yokogawa
              * Sets whether to add a header to the response to a query
              */
             void setHeader(bool);
+
+            /**
+             * Queries the input element type
+             */
+            string getInputModule(string number);
+
+            /**
+             * Queries numeric data (measurement results) from the device
+             */
+            string getNumericValues();
         };
     }
 }

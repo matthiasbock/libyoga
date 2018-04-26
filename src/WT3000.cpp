@@ -82,3 +82,19 @@ void WT3000::setHeader(bool enable)
     string s = Communicate::Group + Communicate::Header + ' ' + (enable ? '1' : '0');
     usb->send(s);
 }
+
+
+string WT3000::getInputModule(string number)
+{
+    string s = Input::Group + Input::Module + ' ' + number;
+    usb->send(s);
+    return usb->receive();
+}
+
+
+string WT3000::getNumericValues()
+{
+    string s = Numeric::Group + Numeric::Value + '?';
+    usb->send(s);
+    return usb->receive();
+}

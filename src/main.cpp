@@ -28,7 +28,7 @@ int main()
 
     for (uint8_t i=0; i<1; i++)
     {
-//        analyzer->read();
+        cout << "Urms1: " << analyzer->getNumericValues() << endl;
         this_thread::sleep_for(1s);
     }
 
