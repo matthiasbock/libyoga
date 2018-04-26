@@ -39,6 +39,14 @@ namespace Yokogawa
         namespace Numeric
         {
             const string Group = ":NUMeric";
+            const string Format = ":FORMat";
+
+            namespace Type
+            {
+                const string ASCII = "ASCii";
+                const string Float = "FLOat";
+            }
+
             const string Value = ":VALue";
         }
 
@@ -107,6 +115,8 @@ namespace Yokogawa
              * Queries the input element type
              */
             string getInputModule(string number);
+
+            void setNumericFormat(string type);
 
             /**
              * Queries numeric data (measurement results) from the device

@@ -24,6 +24,7 @@ void WT3000::connect()
     setOverlap(false);
     setVerbose(false);
     setHeader(false);
+    setNumericFormat(Numeric::Type::Float);
 }
 
 
@@ -89,6 +90,13 @@ string WT3000::getInputModule(string number)
     string s = Input::Group + Input::Module + ' ' + number;
     usb->send(s);
     return usb->receive();
+}
+
+
+void WT3000::setNumericFormat(string type)
+{
+    string s = Numeric::Group + Numeric::Format + ' ' + type;
+    usb->send(s);
 }
 
 
