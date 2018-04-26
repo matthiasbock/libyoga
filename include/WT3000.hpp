@@ -16,21 +16,25 @@ namespace Yokogawa
 {
     namespace WT3000
     {
-        const string cmdInstrumentModel = "*IDN?";
+        const string ClearStatus = "*CLS";
+        const string Identify = "*IDN?";
 
         namespace Communicate
         {
-            const string cmdGroup = ":COMMunicate";
-            const string cmdRemote = ":REMote";
+            const string Group = ":COMMunicate";
+            const string Header = ":HEADer";
+            const string Overlap = ":OVERlap";
+            const string Remote = ":REMote";
+            const string Verbose = ":VERBose";
         }
 
         namespace Status
         {
-            const string cmdGroup = ":STATus";
-            const string cmdExtendedEventStatusEnable = ":EESE";
-            const string cmdFilter = ":FILTer";
+            const string Group = ":STATus";
+            const string ExtendedEventStatusEnable = ":EESE";
+            const string Filter = ":FILTer";
 
-            namespace Filter
+            namespace Transition
             {
                 const string Rise = "RISE";
                 const string Fall = "FALL";
@@ -56,11 +60,34 @@ namespace Yokogawa
 
             void setRemote(bool);
 
-            string getInstrumentModel();
+            /**
+             * Queries the instrument model
+             */
+            string identify();
+
+            /**
+             * Clears the standard event register, extended event register, and error queue
+             */
+            void clearStatus();
 
             void setExtendedEventStatusEnable(bool);
 
             void setStatusFilter(string number, string condition);
+
+            /**
+             * Sets the commands that will operate as overlap commands
+             */
+            void setOverlap(bool);
+
+            /**
+             * Sets whether to return the response to a query using full spelling
+             */
+            void setVerbose(bool);
+
+            /**
+             * Sets whether to add a header to the response to a query
+             */
+            void setHeader(bool);
         };
     }
 }

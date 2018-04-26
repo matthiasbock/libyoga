@@ -16,25 +16,34 @@ WT3000::~WT3000() {}
 void WT3000::connect()
 {
     this->setRemote(true);
-    cout << getInstrumentModel() << endl;
+    cout << identify() << endl;
     setExtendedEventStatusEnable(false);
-    setStatusFilter("1", Status::Filter::Rise);
-    setStatusFilter("2", Status::Filter::Rise);
-    setStatusFilter("7", Status::Filter::Rise);
-
+    setStatusFilter("1", Status::Transition::Rise);
+    setStatusFilter("2", Status::Transition::Rise);
+    setStatusFilter("7", Status::Transition::Rise);
+    setOverlap(false);
+    setVerbose(false);
+    setHeader(false);
 }
 
 
 void WT3000::setRemote(bool enable)
 {
-    string s = Communicate::cmdGroup + Communicate::cmdRemote + ' ' + (enable ? '1' : '0');
+    string s = Communicate::Group + Communicate::Remote + ' ' + (enable ? '1' : '0');
     usb->send(s);
 }
 
 
-string WT3000::getInstrumentModel()
+void WT3000::clearStatus()
 {
-    string s = cmdInstrumentModel;
+    string s = ClearStatus;
+    usb->send(s);
+}
+
+
+string WT3000::identify()
+{
+    string s = Identify;
     usb->send(s);
     return usb->receive();
 }
@@ -42,13 +51,34 @@ string WT3000::getInstrumentModel()
 
 void WT3000::setExtendedEventStatusEnable(bool enable)
 {
-    string s = Status::cmdGroup + Status::cmdExtendedEventStatusEnable + ' ' + (enable ? '1' : '0');
+    string s = Status::Group + Status::ExtendedEventStatusEnable + ' ' + (enable ? '1' : '0');
     usb->send(s);
 }
 
 
 void WT3000::setStatusFilter(string number, string condition)
 {
-    string s = Status::cmdGroup + Status::cmdFilter + number + ' ' + condition;
+    string s = Status::Group + Status::Filter + number + ' ' + condition;
+    usb->send(s);
+}
+
+
+void WT3000::setOverlap(bool enable)
+{
+    string s = Communicate::Group + Communicate::Overlap + ' ' + (enable ? "96" : "0");
+    usb->send(s);
+}
+
+
+void WT3000::setVerbose(bool enable)
+{
+    string s = Communicate::Group + Communicate::Verbose + ' ' + (enable ? '1' : '0');
+    usb->send(s);
+}
+
+
+void WT3000::setHeader(bool enable)
+{
+    string s = Communicate::Group + Communicate::Header + ' ' + (enable ? '1' : '0');
     usb->send(s);
 }
