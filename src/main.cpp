@@ -24,6 +24,7 @@ int main()
 //    usb.select...
 
     Yokogawa::WT3000* analyzer = new Yokogawa::WT3000(usb);
+    analyzer->connect();
 
     for (uint8_t i=0; i<3; i++)
     {
