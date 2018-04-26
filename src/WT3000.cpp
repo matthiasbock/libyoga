@@ -17,6 +17,7 @@ void WT3000::connect()
 {
     this->setRemote(true);
     cout << getInstrumentModel() << endl;
+    setExtendedEventStatusEnable(false);
 }
 
 
@@ -31,4 +32,11 @@ string WT3000::getInstrumentModel()
 {
     usb->send(cmdInstrumentModel);
     return usb->receive();
+}
+
+
+void WT3000::setExtendedEventStatusEnable(bool enable)
+{
+    string s = cmdGroupStatus + cmdStatusExtendedEventStatusEnable + ' ' + (enable ? '1' : '0');
+    usb->send(s);
 }

@@ -37,6 +37,11 @@ namespace Yokogawa
         const string cmdInstrumentModel = "*IDN?";
 
         string getInstrumentModel();
+
+        const string cmdGroupStatus = ":STATus";
+        const string cmdStatusExtendedEventStatusEnable = ":EESE";
+
+        void setExtendedEventStatusEnable(bool);
     };
 }
 
