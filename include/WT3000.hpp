@@ -14,35 +14,55 @@ using namespace std;
 
 namespace Yokogawa
 {
-    class WT3000
+    namespace WT3000
     {
-    private:
-        USBInterface* usb;
-
-    public:
-        WT3000(USBInterface*);
-        ~WT3000();
-
-        /**
-         * Convenience method to prepare the device
-         * for communication
-         */
-        void connect();
-
-        const string cmdGroupCommunicate = ":COMMunicate";
-        const string cmdCommunicateRemote = ":REMote";
-
-        void setRemote(bool);
-
         const string cmdInstrumentModel = "*IDN?";
 
-        string getInstrumentModel();
+        namespace Communicate
+        {
+            const string cmdGroup = ":COMMunicate";
+            const string cmdRemote = ":REMote";
+        }
 
-        const string cmdGroupStatus = ":STATus";
-        const string cmdStatusExtendedEventStatusEnable = ":EESE";
+        namespace Status
+        {
+            const string cmdGroup = ":STATus";
+            const string cmdExtendedEventStatusEnable = ":EESE";
+            const string cmdFilter = ":FILTer";
 
-        void setExtendedEventStatusEnable(bool);
-    };
+            namespace Filter
+            {
+                const string Rise = "RISE";
+                const string Fall = "FALL";
+                const string Both = "BOTH";
+                const string Never = "NEVER";
+            }
+        }
+
+        class WT3000
+        {
+        private:
+            USBInterface* usb;
+
+        public:
+            WT3000(USBInterface*);
+            ~WT3000();
+
+            /**
+             * Convenience method to prepare the device
+             * for communication
+             */
+            void connect();
+
+            void setRemote(bool);
+
+            string getInstrumentModel();
+
+            void setExtendedEventStatusEnable(bool);
+
+            void setStatusFilter(string number, string condition);
+        };
+    }
 }
 
 #endif

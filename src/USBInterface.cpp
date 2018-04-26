@@ -14,4 +14,6 @@ void USBInterface::send(string& s)
 
 string USBInterface::receive()
 {
+    string s = "DUMMY";
+    return s;
 }

@@ -23,12 +23,12 @@ int main()
     USBInterface* usb = new USBInterface();
 //    usb.select...
 
-    Yokogawa::WT3000* analyzer = new Yokogawa::WT3000(usb);
+    Yokogawa::WT3000::WT3000* analyzer = new Yokogawa::WT3000::WT3000(usb);
     analyzer->connect();
 
-    for (uint8_t i=0; i<3; i++)
+    for (uint8_t i=0; i<1; i++)
     {
-        analyzer->read();
+//        analyzer->read();
         this_thread::sleep_for(1s);
     }
 
