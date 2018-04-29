@@ -16,6 +16,28 @@ namespace Yokogawa
 {
     namespace WT3000
     {
+        namespace USB
+        {
+            /** Yokogawa USB Vendor ID */
+            const uint16_t VID = 0x0b21;
+
+            /** Yokogawa WT3000 USB Product ID */
+            const uint16_t PID = 0x0025;
+
+            /**
+             * Data from host to device:
+             *  URB_BULK via USB endpoint 0x01
+             */
+            const uint8_t EndpointTransmit = 0x01;
+
+            /**
+             * Data from device to host:
+             *  URB_BULK via USB endpoint 0x83
+             */
+            const uint8_t EndpointReceive = 0x83;
+        }
+
+
         const string ClearStatus = "*CLS";
         const string Identify = "*IDN?";
 

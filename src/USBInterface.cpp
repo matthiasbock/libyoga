@@ -1,23 +1,84 @@
 
 #include <USBInterface.hpp>
+#include <stdio.h>
+
+
+USBInterface::USBInterface(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t ep_in)
+{
+    device = libusb_open_device_with_vid_pid(NULL, (uint16_t)vid, (uint16_t)pid);
+    if (device == NULL)
+    {
+        printf("Opening USB device failed.\n");
+        return;
+    }
+
+    libusb_set_auto_detach_kernel_driver(device, 1);
+    int status = libusb_claim_interface(device, 0);
+    if (status != LIBUSB_SUCCESS)
+    {
+        libusb_close(device);
+        printf("Claiming the USB interface failed with error %s.\n", libusb_error_name(status));
+        return;
+    }
+
+    endpoint_send = ep_out;
+    endpoint_receive = ep_in;
+}
+
+
+USBInterface::~USBInterface()
+{
+    libusb_release_interface(device, 0);
+    libusb_close(device);
+    libusb_exit(NULL);
+}
 
 
 void USBInterface::send(string& s)
 {
-    /*
-     * Data from host to device:
-     *  URB_BULK via USB endpoint 0x01
-     */
-    cout << s << endl;
+    char buffer[100] = s.c_str();
+    int length = s.length;
+    int actual_length;
+    const static unsigned int timeout_ms = 1000;
+
+    int status = libusb_bulk_transfer(
+                    device,
+                    endpoint_send,
+                    buffer,
+                    length,
+                    &actual_length,
+                    timeout_ms
+                    );
+
+    if (status != 0)
+    {
+        printf("Send failed with error %s.\n", libusb_error_name(status));
+        return;
+    }
 }
 
 
 string USBInterface::receive()
 {
-    /*
-     * Data from device to host:
-     *  URB_BULK via USB endpoint 0x83
-     */
-    string s = "DUMMY";
-    return s;
+    char buffer[100];
+    int length = sizeof(buffer);
+    int length_received;
+    const static unsigned int timeout_ms = 1000;
+
+    int status = libusb_bulk_transfer(
+                    device,
+                    endpoint_receive,
+                    buffer,
+                    length,
+                    &length_received,
+                    timeout_ms
+                    );
+
+    if (status != 0)
+    {
+        printf("Receive failed with error %s.\n", libusb_error_name(status));
+        return "";
+    }
+
+    return string(buffer);
 }

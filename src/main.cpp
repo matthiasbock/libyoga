@@ -20,8 +20,12 @@ using namespace std::chrono_literals;
 
 int main()
 {
-    USBInterface* usb = new USBInterface();
-//    usb.select...
+    USBInterface* usb = new USBInterface(
+                                Yokogawa::WT3000::USB::VID,
+                                Yokogawa::WT3000::USB::PID,
+                                Yokogawa::WT3000::USB::EndpointTransmit,
+                                Yokogawa::WT3000::USB::EndpointReceive
+                                );
 
     Yokogawa::WT3000::WT3000* analyzer = new Yokogawa::WT3000::WT3000(usb);
     analyzer->connect();

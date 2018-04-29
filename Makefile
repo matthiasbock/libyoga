@@ -10,6 +10,7 @@ CPPFLAGS += -std=gnu++17
 CPPFLAGS += -fdiagnostics-color=auto
 CPPFLAGS += -Iinclude/
 LDFLAGS += -lpthread
+LDFLAGS += -lusb
 
 SRCS = $(wildcard src/*.cpp)
 OBJS = $(SRCS:.cpp=.o)
