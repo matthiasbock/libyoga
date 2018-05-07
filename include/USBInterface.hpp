@@ -7,9 +7,9 @@
 #define USBINTERFACE_HPP
 
 #include "stdint.h"
-#include "stddef.h"
-#include <iostream>
+#include "iostream"
 #include "string"
+#include "string.h"
 #include "libusb-1.0/libusb.h"
 
 using namespace std;

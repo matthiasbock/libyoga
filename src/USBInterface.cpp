@@ -5,6 +5,16 @@
 
 USBInterface::USBInterface(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t ep_in)
 {
+    int rc = libusb_init(NULL);
+    if (rc < 0)
+    {
+        cerr << "Error initializing libusb" << endl << flush;
+        return;
+    }
+
+    // Set debug output level to max
+    libusb_set_debug(NULL, 3);
+
     device = libusb_open_device_with_vid_pid(NULL, (uint16_t)vid, (uint16_t)pid);
     if (device == NULL)
     {
@@ -21,6 +31,8 @@ USBInterface::USBInterface(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t e
         return;
     }
 
+    cout << "Successfully opened and claimed USB device." << endl << flush;
+
     endpoint_send = ep_out;
     endpoint_receive = ep_in;
 }
@@ -36,11 +48,12 @@ USBInterface::~USBInterface()
 
 void USBInterface::send(string& s)
 {
-    char buffer[100] = s.c_str();
-    int length = s.length;
+    unsigned char* buffer = (unsigned char*) s.c_str();
+    int length = s.length();
     int actual_length;
     const static unsigned int timeout_ms = 1000;
 
+    cout << "Sending..." << endl << flush;
     int status = libusb_bulk_transfer(
                     device,
                     endpoint_send,
@@ -60,11 +73,12 @@ void USBInterface::send(string& s)
 
 string USBInterface::receive()
 {
-    char buffer[100];
+    unsigned char buffer[100];
     int length = sizeof(buffer);
     int length_received;
     const static unsigned int timeout_ms = 1000;
 
+    cout << "Receiving..." << endl << flush;
     int status = libusb_bulk_transfer(
                     device,
                     endpoint_receive,
@@ -80,5 +94,5 @@ string USBInterface::receive()
         return "";
     }
 
-    return string(buffer);
+    return string((const char*) buffer);
 }

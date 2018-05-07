@@ -10,7 +10,7 @@ CPPFLAGS += -std=gnu++17
 CPPFLAGS += -fdiagnostics-color=auto
 CPPFLAGS += -Iinclude/
 LDFLAGS += -lpthread
-LDFLAGS += -lusb
+LDFLAGS += -lusb-1.0
 
 SRCS = $(wildcard src/*.cpp)
 OBJS = $(SRCS:.cpp=.o)
@@ -23,7 +23,7 @@ run: $(ELF)
 	./$(ELF)
 
 $(ELF): $(OBJS)
-	$(CPP) $(CPPFLAGS) $(LDFLAGS) $^ -o $@
+	$(CPP) $^ $(CPPFLAGS) $(LDFLAGS) -o $@
 
 %.o: %.cpp
 	$(CPP) $(CPPFLAGS) -c $^ -o $@
