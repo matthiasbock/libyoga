@@ -51,9 +51,9 @@ void USBInterface::send(string& s)
     unsigned char* buffer = (unsigned char*) s.c_str();
     int length = s.length();
     int actual_length;
-    const static unsigned int timeout_ms = 1000;
+    const unsigned int timeout_ms = 1000;
 
-    cout << "Sending..." << endl << flush;
+    cout << "Sending: " << s << endl << flush;
     int status = libusb_bulk_transfer(
                     device,
                     endpoint_send,
@@ -73,12 +73,11 @@ void USBInterface::send(string& s)
 
 string USBInterface::receive()
 {
-    unsigned char buffer[100];
+    unsigned char buffer[10000];
     int length = sizeof(buffer);
     int length_received;
-    const static unsigned int timeout_ms = 1000;
+    const unsigned int timeout_ms = 1000;
 
-    cout << "Receiving..." << endl << flush;
     int status = libusb_bulk_transfer(
                     device,
                     endpoint_receive,
@@ -93,6 +92,8 @@ string USBInterface::receive()
         printf("Receive failed with error %s.\n", libusb_error_name(status));
         return "";
     }
+
+    cout << "Received: " << buffer << endl << flush;
 
     return string((const char*) buffer);
 }
