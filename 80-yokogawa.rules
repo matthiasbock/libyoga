@@ -1,0 +1,8 @@
+
+#
+# Yokogawa WT3000 power analyzer
+# USB interface
+#
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0b21", ATTRS{idProduct}=="0025", OWNER="user", GROUP="user"
+
+
