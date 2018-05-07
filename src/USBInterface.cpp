@@ -8,7 +8,7 @@ USBInterface::USBInterface(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t e
     int rc = libusb_init(NULL);
     if (rc < 0)
     {
-        cerr << "Error initializing libusb" << endl << flush;
+        log(LogLevel::Error, "Error initializing libusb");
         return;
     }
 
@@ -18,7 +18,7 @@ USBInterface::USBInterface(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t e
     device = libusb_open_device_with_vid_pid(NULL, (uint16_t)vid, (uint16_t)pid);
     if (device == NULL)
     {
-        printf("Opening USB device failed.\n");
+        log(LogLevel::Error, "Opening USB device failed.");
         return;
     }
 
@@ -27,11 +27,11 @@ USBInterface::USBInterface(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t e
     if (status != LIBUSB_SUCCESS)
     {
         libusb_close(device);
-        printf("Claiming the USB interface failed with error %s.\n", libusb_error_name(status));
+        log(LogLevel::Error, "Claiming the USB interface failed with error " << libusb_error_name(status));
         return;
     }
 
-    cout << "Successfully opened and claimed USB device." << endl << flush;
+    log(LogLevel::Info, "Successfully opened and claimed USB device.");
 
     endpoint_send = ep_out;
     endpoint_receive = ep_in;
@@ -46,6 +46,12 @@ USBInterface::~USBInterface()
 }
 
 
+void USBInterface::setLogLevel(LogLevel::type level)
+{
+    loglevel = level;
+}
+
+
 void USBInterface::send(string& s)
 {
     unsigned char* buffer = (unsigned char*) s.c_str();
@@ -53,7 +59,7 @@ void USBInterface::send(string& s)
     int actual_length;
     const unsigned int timeout_ms = 1000;
 
-    cout << "Sending: " << s << endl << flush;
+    log(LogLevel::Debug, "Sending: " << s);
     int status = libusb_bulk_transfer(
                     device,
                     endpoint_send,
@@ -65,7 +71,7 @@ void USBInterface::send(string& s)
 
     if (status != 0)
     {
-        printf("Send failed with error %s.\n", libusb_error_name(status));
+        log(LogLevel::Error, "Send failed with error " << libusb_error_name(status));
         return;
     }
 }
@@ -89,11 +95,11 @@ string USBInterface::receive()
 
     if (status != 0)
     {
-        printf("Receive failed with error %s.\n", libusb_error_name(status));
+        log(LogLevel::Error, "Receive failed with error " << libusb_error_name(status));
         return "";
     }
 
-    cout << "Received: " << buffer << endl << flush;
+    log(LogLevel::Debug, "Received: " << buffer);
 
     return string((const char*) buffer);
 }

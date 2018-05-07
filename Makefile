@@ -1,5 +1,5 @@
 
-MAIN = main
+MAIN = yoga-cli
 
 CC = gcc
 CPP = g++

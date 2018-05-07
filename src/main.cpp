@@ -26,6 +26,7 @@ int main()
                                 Yokogawa::WT3000::USB::EndpointTransmit,
                                 Yokogawa::WT3000::USB::EndpointReceive
                                 );
+    usb->setLogLevel(LogLevel::Info);
 
     Yokogawa::WT3000::Interface* analyzer = new Yokogawa::WT3000::Interface(usb);
     analyzer->connect();

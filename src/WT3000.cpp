@@ -11,12 +11,15 @@ Interface::Interface(USBInterface* usb)
 }
 
 
-Interface::~Interface() {}
+Interface::~Interface()
+{
+    setRemote(false);
+}
 
 
 void Interface::connect()
 {
-    this->setRemote(true);
+    setRemote(true);
     cout << identify() << endl;
     setExtendedEventStatusEnable(false);
     setStatusFilter("1", Status::Transition::Rise);
