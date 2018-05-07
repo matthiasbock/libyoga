@@ -79,7 +79,7 @@ void USBInterface::send(string& s)
 
 string USBInterface::receive()
 {
-    unsigned char buffer[10000];
+    unsigned char buffer[1024];
     int length = sizeof(buffer);
     int length_received;
     const unsigned int timeout_ms = 1000;
@@ -99,7 +99,37 @@ string USBInterface::receive()
         return "";
     }
 
-    log(LogLevel::Debug, "Received: " << buffer);
+    string s = string((const char*) buffer);
 
-    return string((const char*) buffer);
+    // Termiante string earlier, if last character is line-wrap
+    if (buffer[length_received-1] == 0x0a)
+        buffer[length_received-1] = 0;
+    log(LogLevel::Debug, "Received " << length_received << " byte(s): " << buffer);
+
+    return s;
+}
+
+
+bool USBInterface::receive(unsigned char* buffer, int length_max, int* length_received)
+{
+    const unsigned int timeout_ms = 1000;
+
+    int status = libusb_bulk_transfer(
+                    device,
+                    endpoint_receive,
+                    buffer,
+                    length_max,
+                    length_received,
+                    timeout_ms
+                    );
+
+    if (status != 0)
+    {
+        log(LogLevel::Error, "Receive failed with error " << libusb_error_name(status));
+        return false;
+    }
+
+    log(LogLevel::Debug, "Received " << *length_received << " byte(s)");
+
+    return true;
 }

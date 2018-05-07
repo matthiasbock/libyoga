@@ -6,8 +6,12 @@
 #ifndef WT3000_HPP
 #define WT3000_HPP
 
+#include <string>
+#include <string.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include <USBInterface.hpp>
+#include <vector>
 
 using namespace std;
 
@@ -62,12 +66,17 @@ namespace Yokogawa
             namespace Numeric
             {
                 const string Group = ":NUMeric";
-                const string Format = ":FORMat";
 
-                namespace Type
+                namespace Format
                 {
+                    const string Group = ":FORMat";
                     const string ASCII = "ASCii";
                     const string Float = "FLOat";
+
+                    typedef enum
+                    {
+                        FORMAT_FLOAT,
+                    } enumFormats;
                 }
 
                 const string Value = ":VALue";
@@ -145,11 +154,13 @@ namespace Yokogawa
             string getInputModule(string number);
 
             void setNumericFormat(string type);
+            void setNumericFormat(GPIB::Numeric::Format::enumFormats);
 
             /**
              * Queries numeric data (measurement results) from the device
              */
-            string getNumericValues();
+            bool getNumericValues(unsigned char* buffer, int length_max, int* length_received);
+            vector<float> getNumericValuesAsFloats();
         };
     }
 }

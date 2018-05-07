@@ -26,14 +26,16 @@ int main()
                                 Yokogawa::WT3000::USB::EndpointTransmit,
                                 Yokogawa::WT3000::USB::EndpointReceive
                                 );
-    usb->setLogLevel(LogLevel::Info);
+    usb->setLogLevel(LogLevel::Debug);
 
     Yokogawa::WT3000::Interface* analyzer = new Yokogawa::WT3000::Interface(usb);
     analyzer->connect();
 
+    analyzer->setNumericFormat(Yokogawa::WT3000::GPIB::Numeric::Format::Float);
+
     for (uint8_t i=0; i<1; i++)
     {
-        cout << "Urms1: " << analyzer->getNumericValues() << endl;
+        analyzer->getNumericValuesAsFloats();
         this_thread::sleep_for(1s);
     }
 

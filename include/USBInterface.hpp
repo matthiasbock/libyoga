@@ -40,9 +40,14 @@ public:
     void send(string& s);
 
     /**
-     * Perform blocking USB reception
+     * Perform blocking USB reception (printable characters only)
      */
     string receive();
+
+    /**
+     * Perform blocking USB reception
+     */
+    bool receive(unsigned char* buffer, int length_max, int* length_received);
 };
 
 #endif
