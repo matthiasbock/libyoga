@@ -37,64 +37,70 @@ namespace Yokogawa
             const uint8_t EndpointReceive = 0x83;
         }
 
-
-        const string ClearStatus = "*CLS";
-        const string Identify = "*IDN?";
-
-        namespace Communicate
+        namespace GPIB
         {
-            const string Group = ":COMMunicate";
-            const string Header = ":HEADer";
-            const string Overlap = ":OVERlap";
-            const string Remote = ":REMote";
-            const string Verbose = ":VERBose";
-        }
+            const string ClearStatus = "*CLS";
+            const string Identify = "*IDN?";
 
-        namespace Input
-        {
-            const string Group = ":INPut";
-            const string Module = ":MODUle";
-            const string Voltage = ":VOLTage";
-            const string Current = ":CURRent";
-        }
-
-        namespace Numeric
-        {
-            const string Group = ":NUMeric";
-            const string Format = ":FORMat";
-
-            namespace Type
+            namespace Communicate
             {
-                const string ASCII = "ASCii";
-                const string Float = "FLOat";
+                const string Group = ":COMMunicate";
+                const string Header = ":HEADer";
+                const string Overlap = ":OVERlap";
+                const string Remote = ":REMote";
+                const string Verbose = ":VERBose";
             }
 
-            const string Value = ":VALue";
-        }
-
-        namespace Status
-        {
-            const string Group = ":STATus";
-            const string ExtendedEventStatusEnable = ":EESE";
-            const string Filter = ":FILTer";
-
-            namespace Transition
+            namespace Input
             {
-                const string Rise = "RISE";
-                const string Fall = "FALL";
-                const string Both = "BOTH";
-                const string Never = "NEVER";
+                const string Group = ":INPut";
+                const string Module = ":MODUle";
+                const string Voltage = ":VOLTage";
+                const string Current = ":CURRent";
+            }
+
+            namespace Numeric
+            {
+                const string Group = ":NUMeric";
+                const string Format = ":FORMat";
+
+                namespace Type
+                {
+                    const string ASCII = "ASCii";
+                    const string Float = "FLOat";
+                }
+
+                const string Value = ":VALue";
+            }
+
+            namespace Status
+            {
+                const string Group = ":STATus";
+                const string ExtendedEventStatusEnable = ":EESE";
+                const string Filter = ":FILTer";
+
+                namespace Transition
+                {
+                    const string Rise = "RISE";
+                    const string Fall = "FALL";
+                    const string Both = "BOTH";
+                    const string Never = "NEVER";
+                }
             }
         }
 
-        class WT3000
+        /**
+         * A class with abstract methods to interact with a WT3000 power analyzer
+         * using the above GPIB commands via a referenced USB interface
+         */
+        class Interface
         {
         private:
             USBInterface* usb;
 
         public:
-            WT3000(USBInterface*);
-            ~WT3000();
+            Interface(USBInterface*);
+            ~Interface();
 
             /**
              * Convenience method to prepare the device

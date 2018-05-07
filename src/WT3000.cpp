@@ -2,18 +2,19 @@
 #include <WT3000.hpp>
 
 using namespace Yokogawa::WT3000;
+using namespace Yokogawa::WT3000::GPIB;
 
 
-WT3000::WT3000(USBInterface* usb)
+Interface::Interface(USBInterface* usb)
 {
     this->usb = usb;
 }
 
 
-WT3000::~WT3000() {}
+Interface::~Interface() {}
 
 
-void WT3000::connect()
+void Interface::connect()
 {
     this->setRemote(true);
     cout << identify() << endl;
@@ -28,21 +29,21 @@ void WT3000::connect()
 }
 
 
-void WT3000::setRemote(bool enable)
+void Interface::setRemote(bool enable)
 {
     string s = Communicate::Group + Communicate::Remote + ' ' + (enable ? '1' : '0');
     usb->send(s);
 }
 
 
-void WT3000::clearStatus()
+void Interface::clearStatus()
 {
     string s = ClearStatus;
     usb->send(s);
 }
 
 
-string WT3000::identify()
+string Interface::identify()
 {
     string s = Identify;
     usb->send(s);
@@ -50,42 +51,42 @@ string WT3000::identify()
 }
 
 
-void WT3000::setExtendedEventStatusEnable(bool enable)
+void Interface::setExtendedEventStatusEnable(bool enable)
 {
     string s = Status::Group + Status::ExtendedEventStatusEnable + ' ' + (enable ? '1' : '0');
     usb->send(s);
 }
 
 
-void WT3000::setStatusFilter(string number, string condition)
+void Interface::setStatusFilter(string number, string condition)
 {
     string s = Status::Group + Status::Filter + number + ' ' + condition;
     usb->send(s);
 }
 
 
-void WT3000::setOverlap(bool enable)
+void Interface::setOverlap(bool enable)
 {
     string s = Communicate::Group + Communicate::Overlap + ' ' + (enable ? "96" : "0");
     usb->send(s);
 }
 
 
-void WT3000::setVerbose(bool enable)
+void Interface::setVerbose(bool enable)
 {
     string s = Communicate::Group + Communicate::Verbose + ' ' + (enable ? '1' : '0');
     usb->send(s);
 }
 
 
-void WT3000::setHeader(bool enable)
+void Interface::setHeader(bool enable)
 {
     string s = Communicate::Group + Communicate::Header + ' ' + (enable ? '1' : '0');
     usb->send(s);
 }
 
 
-string WT3000::getInputModule(string number)
+string Interface::getInputModule(string number)
 {
     string s = Input::Group + Input::Module + ' ' + number;
     usb->send(s);
@@ -93,14 +94,14 @@ string WT3000::getInputModule(string number)
 }
 
 
-void WT3000::setNumericFormat(string type)
+void Interface::setNumericFormat(string type)
 {
     string s = Numeric::Group + Numeric::Format + ' ' + type;
     usb->send(s);
 }
 
 
-string WT3000::getNumericValues()
+string Interface::getNumericValues()
 {
     string s = Numeric::Group + Numeric::Value + '?';
     usb->send(s);
