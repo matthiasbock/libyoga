@@ -183,7 +183,19 @@ vector<float> Interface::getNumericValuesAsFloats()
     }
 
     cout << "Got " << length_payload << " bytes of data." << endl << flush;
-//    if (string.i)
+
+    cout << "Assuming format: float" << endl << flush;
+    float* f = (float*) (rawData+6);
+    for (uint16_t i=0; i<length_payload/4; i++)
+    {
+        printf("%0.03f ", *f);
+        f++;
+        if (i % 10 == 9)
+        {
+            cout << endl << flush;
+        }
+    }
+    cout << endl << flush;
 
     return v;
 }
