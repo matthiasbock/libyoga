@@ -6,9 +6,8 @@ using namespace Yokogawa::WT3000;
 using namespace Yokogawa::WT3000::GPIB;
 
 
-Interface::Interface(USBInterface* usb)
+Interface::Interface()
 {
-    this->usb = usb;
 }
 
 

@@ -106,12 +106,25 @@ namespace Yokogawa
         class Interface
         {
         private:
-            USBInterface* usb;
+            USBInterface* usb = NULL;
             LogLevel::type loglevel = LogLevel::Debug;
 
         public:
-            Interface(USBInterface*);
+            Interface();
+            Interface(USBInterface* interface)
+                :Interface()
+            {
+                setUSBInterface(interface);
+            }
             ~Interface();
+
+            /**
+             * Assign a USB interface through which to communicate with the device
+             */
+            void setUSBInterface(USBInterface* interface)
+            {
+                usb = interface;
+            }
 
             /**
              * Returns the currently set logging verbosity
