@@ -8,6 +8,7 @@
 
 #include <Logging.hpp>
 #include "stdint.h"
+#include "stdbool.h"
 #include "iostream"
 #include "string"
 #include "string.h"
@@ -18,6 +19,7 @@ using namespace std;
 class USBInterface
 {
 private:
+    bool opened = false;
     LogLevel::type loglevel = LogLevel::Debug;
     libusb_device *dev, **devs;
     libusb_device_handle *device = NULL;
@@ -29,7 +31,15 @@ public:
     USBInterface(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t ep_in);
     ~USBInterface();
 
-    /*
+    /**
+     * Determine whether the interface is open or not
+     */
+    bool isOpen()
+    {
+        return opened;
+    }
+
+    /**
      * Adjust the object's loglevel to your preference
      */
     void setLogLevel(LogLevel::type);

@@ -5,6 +5,8 @@
 
 USBInterface::USBInterface(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t ep_in)
 {
+    opened = false;
+
     int rc = libusb_init(NULL);
     if (rc < 0)
     {
@@ -35,14 +37,18 @@ USBInterface::USBInterface(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t e
 
     endpoint_send = ep_out;
     endpoint_receive = ep_in;
+    opened = true;
 }
 
 
 USBInterface::~USBInterface()
 {
-    libusb_release_interface(device, 0);
-    libusb_close(device);
-    libusb_exit(NULL);
+    if (isOpen())
+    {
+        libusb_release_interface(device, 0);
+        libusb_close(device);
+        libusb_exit(NULL);
+    }
 }
 
 

@@ -28,6 +28,11 @@ int main()
                                 );
     usb->setLogLevel(LogLevel::Debug);
 
+    if (!usb->isOpen())
+    {
+        return -1;
+    }
+
     Yokogawa::WT3000::Interface* analyzer = new Yokogawa::WT3000::Interface(usb);
     analyzer->connect();
 
