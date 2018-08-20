@@ -178,22 +178,27 @@ vector<float> Interface::getNumericValuesAsFloats()
 
     if (length_payload != length_announced)
     {
-        cerr << "Data length mismatch: Expected " << length_payload << ", got " << length_received << endl << flush;
+        cerr << "Data length mismatch: Expected " << length_announced << " bytes of payload, got " << length_payload << endl << flush;
         return v;
     }
 
     cout << "Got " << length_payload << " bytes of data." << endl << flush;
-
     cout << "Assuming format: float" << endl << flush;
-    float* f = (float*) (rawData+6);
-    for (uint16_t i=0; i<length_payload/4; i++)
+
+    uint8_t* b = (uint8_t*) (rawData)+6;
+    for (uint16_t i=6; i<length_payload/4; i++)
     {
-        printf("%0.03f ", *f);
-        f++;
-        if (i % 10 == 9)
+        union
         {
-            cout << endl << flush;
-        }
+            float f;
+            uint8_t b[4];
+        } u;
+        u.b[3] = *(b++);
+        u.b[2] = *(b++);
+        u.b[1] = *(b++);
+        u.b[0] = *(b++);
+
+        printf("%0.05f ", u.f);
     }
     cout << endl << flush;
 
