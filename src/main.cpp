@@ -42,7 +42,23 @@ int main()
 
     while (true)
     {
+        this_thread::sleep_for(0.25s);
         vector<float> values = analyzer.getNumericValuesAsFloats();
+
+        // For 1-2 seconds millions of Volt are reported, when turning on the high voltage supply.
+        if ((values.at(0) < -1500.0) || (values.at(0) > 1500.0))
+        {
+            // Measurement values are not plausible, that's probably an error, discard this measurement
+            continue;
+        }
+
+        // For 1-2 seconds millions of Ampere are reported, when turning on the high current sink.
+        if ((values.at(4) < -1.0) || (values.at(4) > 100.0))
+        {
+            // Measurement values are not plausible, that's probably an error, discard this measurement
+            continue;
+        }
+
         printf("Urms1 = %2.5f V, ", values.at(0));
         printf("Idc1 = %2.5f A, ", values.at(1));
         printf("P1 = %2.5f W, ", values.at(2));
@@ -50,6 +66,5 @@ int main()
         printf("Irms2 = %2.5f A, ", values.at(4));
         printf("P2 = %2.5f W \n", values.at(5));
         cout << flush;
-        this_thread::sleep_for(0.25s);
     }
 }
