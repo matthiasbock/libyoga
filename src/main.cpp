@@ -45,7 +45,7 @@ int main()
     signal(SIGINT, signalHandler);
 
     usb = new USBInterface();
-    usb->setLogLevel(LogLevel::None);
+    usb->setLogLevel(LogLevel::Warning);
     usb->open(
             Yokogawa::WT3000::USB::VID,
             Yokogawa::WT3000::USB::PID,
@@ -59,7 +59,7 @@ int main()
     }
 
     analyzer = new Yokogawa::WT3000::Interface();
-    analyzer->setLogLevel(LogLevel::None);
+    analyzer->setLogLevel(LogLevel::Warning);
     analyzer->setUSBInterface(usb);
     analyzer->connect();
 
