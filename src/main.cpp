@@ -12,6 +12,7 @@
 #include <thread>
 #include <USBInterface.hpp>
 #include <WT3000.hpp>
+#include <vector>
 
 
 using namespace std;
@@ -26,7 +27,7 @@ int main()
                     Yokogawa::WT3000::USB::EndpointTransmit,
                     Yokogawa::WT3000::USB::EndpointReceive
                     );
-    usb.setLogLevel(LogLevel::Debug);
+    usb.setLogLevel(LogLevel::None);
 
     if (!usb.isOpen())
     {
@@ -34,13 +35,21 @@ int main()
     }
 
     Yokogawa::WT3000::Interface analyzer(&usb);
+    analyzer.setLogLevel(LogLevel::None);
     analyzer.connect();
 
     analyzer.setNumericFormat(Yokogawa::WT3000::GPIB::Numeric::Format::Float);
 
-    for (uint8_t i=0; i<1; i++)
+    while (true)
     {
-        analyzer.getNumericValuesAsFloats();
-        this_thread::sleep_for(1s);
+        vector<float> values = analyzer.getNumericValuesAsFloats();
+        printf("Urms1 = %2.5f V, ", values.at(0));
+        printf("Idc1 = %2.5f A, ", values.at(1));
+        printf("P1 = %2.5f W, ", values.at(2));
+        printf("Urms2 = %2.5f V, ", values.at(3));
+        printf("Irms2 = %2.5f A, ", values.at(4));
+        printf("P2 = %2.5f W \n", values.at(5));
+        cout << flush;
+        this_thread::sleep_for(0.25s);
     }
 }
