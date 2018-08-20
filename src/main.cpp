@@ -6,6 +6,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <iostream>
 #include <chrono>
 #include <time.h>
@@ -19,31 +20,37 @@ using namespace std;
 using namespace std::chrono_literals;
 
 
+USBInterface* usb;
+Yokogawa::WT3000::Interface* analyzer;
+
 int main()
 {
-    USBInterface usb(
-                    Yokogawa::WT3000::USB::VID,
-                    Yokogawa::WT3000::USB::PID,
-                    Yokogawa::WT3000::USB::EndpointTransmit,
-                    Yokogawa::WT3000::USB::EndpointReceive
-                    );
-    usb.setLogLevel(LogLevel::None);
+    usb = new USBInterface();
+    usb->open(
+            Yokogawa::WT3000::USB::VID,
+            Yokogawa::WT3000::USB::PID,
+            Yokogawa::WT3000::USB::EndpointTransmit,
+            Yokogawa::WT3000::USB::EndpointReceive
+            );
+    usb->setLogLevel(LogLevel::None);
 
-    if (!usb.isOpen())
+    if (!usb->isOpen())
     {
         return -1;
     }
 
-    Yokogawa::WT3000::Interface analyzer(&usb);
-    analyzer.setLogLevel(LogLevel::None);
-    analyzer.connect();
+    analyzer = new Yokogawa::WT3000::Interface();
+    analyzer->setUSBInterface(usb);
+    analyzer->connect();
+    analyzer->setLogLevel(LogLevel::None);
+    analyzer->connect();
 
-    analyzer.setNumericFormat(Yokogawa::WT3000::GPIB::Numeric::Format::Float);
+    analyzer->setNumericFormat(Yokogawa::WT3000::GPIB::Numeric::Format::Float);
 
     while (true)
     {
         this_thread::sleep_for(0.25s);
-        vector<float> values = analyzer.getNumericValuesAsFloats();
+        vector<float> values = analyzer->getNumericValuesAsFloats();
 
         // For 1-2 seconds millions of Volt are reported, when turning on the high voltage supply.
         if ((values.at(0) < -1500.0) || (values.at(0) > 1500.0))
