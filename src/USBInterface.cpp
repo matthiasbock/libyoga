@@ -3,10 +3,14 @@
 #include <stdio.h>
 
 
-USBInterface::USBInterface(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t ep_in)
+USBInterface::USBInterface()
 {
     opened = false;
+}
 
+
+void USBInterface::open(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t ep_in)
+{
     int rc = libusb_init(NULL);
     if (rc < 0)
     {

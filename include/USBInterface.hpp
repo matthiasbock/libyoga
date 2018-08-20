@@ -21,15 +21,23 @@ class USBInterface
 private:
     bool opened = false;
     LogLevel::type loglevel = LogLevel::Debug;
-    libusb_device *dev, **devs;
+    libusb_device *dev = NULL;
+    libusb_device **devs = NULL;
     libusb_device_handle *device = NULL;
     struct libusb_device_descriptor desc;
     uint8_t endpoint_send;
     uint8_t endpoint_receive;
 
 public:
-    USBInterface(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t ep_in);
+    USBInterface();
+    USBInterface(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t ep_in)
+        : USBInterface()
+    {
+        open(vid, pid, ep_out, ep_in);
+    }
     ~USBInterface();
+
+    void open(uint16_t vid, uint16_t pid, uint8_t ep_out, uint8_t ep_in);
 
     /**
      * Determine whether the interface is open or not
