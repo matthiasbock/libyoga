@@ -14,25 +14,44 @@
 #include <USBInterface.hpp>
 #include <WT3000.hpp>
 #include <vector>
+#include <signal.h>
 
 
 using namespace std;
 using namespace std::chrono_literals;
 
 
-USBInterface* usb;
-Yokogawa::WT3000::Interface* analyzer;
+USBInterface* usb = NULL;
+Yokogawa::WT3000::Interface* analyzer = NULL;
+
+
+/**
+ * Catches Ctrl-C and properly deconstructs our objects
+ * before terminating as requested
+ */
+static void signalHandler(int sig)
+{
+    if (analyzer != NULL)
+        delete analyzer;
+    if (usb != NULL)
+        delete usb;
+    exit(0);
+}
+
 
 int main()
 {
+    // Ctrl-C is handled by our own handler
+    signal(SIGINT, signalHandler);
+
     usb = new USBInterface();
+    usb->setLogLevel(LogLevel::None);
     usb->open(
             Yokogawa::WT3000::USB::VID,
             Yokogawa::WT3000::USB::PID,
             Yokogawa::WT3000::USB::EndpointTransmit,
             Yokogawa::WT3000::USB::EndpointReceive
             );
-    usb->setLogLevel(LogLevel::None);
 
     if (!usb->isOpen())
     {
@@ -40,9 +59,8 @@ int main()
     }
 
     analyzer = new Yokogawa::WT3000::Interface();
-    analyzer->setUSBInterface(usb);
-    analyzer->connect();
     analyzer->setLogLevel(LogLevel::None);
+    analyzer->setUSBInterface(usb);
     analyzer->connect();
 
     analyzer->setNumericFormat(Yokogawa::WT3000::GPIB::Numeric::Format::Float);
