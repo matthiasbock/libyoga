@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <USBInterface.hpp>
+#include <Logging.hpp>
 #include <vector>
 
 using namespace std;
@@ -106,10 +107,27 @@ namespace Yokogawa
         {
         private:
             USBInterface* usb;
+            LogLevel::type loglevel = LogLevel::Debug;
 
         public:
             Interface(USBInterface*);
             ~Interface();
+
+            /**
+             * Returns the currently set logging verbosity
+             */
+            LogLevel::type getLogLevel()
+            {
+                return loglevel;
+            }
+
+            /**
+             * Sets the logging verbosity to the desired level
+             */
+            void setLogLevel(LogLevel::type level)
+            {
+                loglevel = level;
+            }
 
             /**
              * Convenience method to prepare the device
