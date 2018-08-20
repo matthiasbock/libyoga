@@ -121,7 +121,10 @@ void Interface::setNumericFormat(Numeric::Format::enumFormats format)
 
 bool Interface::getNumericValues(unsigned char* buffer, int length_max, int* length_received)
 {
-    cout << "Reading values from device..." << endl << flush;
+    if (getLogLevel() >= LogLevel::Debug)
+    {
+        cout << "Reading values from device..." << endl << flush;
+    }
     string s = Numeric::Group + Numeric::Value + '?';
     usb->send(s);
 
@@ -134,6 +137,7 @@ vector<float> Interface::getNumericValuesAsFloats()
 {
     vector<float> v;
 
+    // A big reception buffer for the data coming from the device
     unsigned char rawData[10000];
     int length_received;
     if (!getNumericValues(rawData, sizeof(rawData), &length_received))
@@ -182,8 +186,11 @@ vector<float> Interface::getNumericValuesAsFloats()
         return v;
     }
 
-    cout << "Got " << length_payload << " bytes of data." << endl << flush;
-    cout << "Assuming format: float" << endl << flush;
+    if (getLogLevel() >= LogLevel::Debug)
+    {
+        cout << "Got " << length_payload << " bytes of data." << endl << flush;
+        cout << "Assuming format: float" << endl << flush;
+    }
 
     uint8_t* b = (uint8_t*) (rawData)+6;
     for (uint16_t i=6; i<length_payload/4; i++)
@@ -198,9 +205,12 @@ vector<float> Interface::getNumericValuesAsFloats()
         u.b[1] = *(b++);
         u.b[0] = *(b++);
 
-        printf("%0.05f ", u.f);
+        if (getLogLevel() >= LogLevel::Debug)
+        {
+            printf("Received floating point number: %0.05f\n", u.f);
+        }
+        v.push_back(u.f);
     }
-    cout << endl << flush;
 
     return v;
 }
