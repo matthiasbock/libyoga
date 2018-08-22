@@ -8,11 +8,13 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <iostream>
+#include <iomanip>
 #include <chrono>
 #include <time.h>
 #include <thread>
 #include <USBInterface.hpp>
 #include <WT3000.hpp>
+#include <Logfile.hpp>
 #include <vector>
 #include <signal.h>
 
@@ -58,6 +60,10 @@ int main()
         return -1;
     }
 
+    Logfile logfile;
+    logfile.open("log.csv");
+    logfile.writeln("U1;I1;P1;U2;I2;P2;");
+
     analyzer = new Yokogawa::WT3000::Interface();
     analyzer->setLogLevel(LogLevel::Warning);
     analyzer->setUSBInterface(usb);
@@ -67,7 +73,7 @@ int main()
 
     while (true)
     {
-        this_thread::sleep_for(0.25s);
+        this_thread::sleep_for(0.5s);
         vector<float> values = analyzer->getNumericValuesAsFloats();
 
         // For 1-2 seconds millions of Volt are reported, when turning on the high voltage supply.
@@ -84,12 +90,22 @@ int main()
             continue;
         }
 
-        printf("Urms1 = %2.5f V, ", values.at(0));
-        printf("Idc1 = %2.5f A, ", values.at(1));
+        printf("U1 = %2.5f V, ", values.at(0));
+        printf("I1 = %2.5f A, ", values.at(1));
         printf("P1 = %2.5f W, ", values.at(2));
-        printf("Urms2 = %2.5f V, ", values.at(3));
-        printf("Irms2 = %2.5f A, ", values.at(4));
+        printf("U2 = %2.5f V, ", values.at(3));
+        printf("I2 = %2.5f A, ", values.at(4));
         printf("P2 = %2.5f W \n", values.at(5));
         cout << flush;
+
+        stringstream ss;
+        ss << fixed << setprecision(5);
+        ss << values.at(0) << ";";
+        ss << values.at(1) << ";";
+        ss << values.at(2) << ";";
+        ss << values.at(3) << ";";
+        ss << values.at(4) << ";";
+        ss << values.at(5) << ";";
+        logfile.writeln(ss.str());
     }
 }
